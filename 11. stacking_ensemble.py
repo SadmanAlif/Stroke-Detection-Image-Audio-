@@ -68,9 +68,38 @@ stacking_clf = StackingClassifier(
 )
 
 
+def train_classifier_combined(real, fake):
 
-stacking_clf.fit(X_train, y_train)
+    real = real.drop('Filename', axis = 1)
+    real_20 = real.sample(frac=0.2, random_state = 150)
+    real_80 = real.drop(real_20.index)
+    combined_df = pd.concat([real_80, fake], ignore_index=True)
 
-y_pred = stacking_clf.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Stacking Model Accuracy: {accuracy:.4f}")
+    train_df = combined_df
+    test_df = real_20
+
+    print(train_df.head())
+    print(test_df.head())
+
+
+    X_train = train_df.iloc[:, :-1]  # All columns except the last one
+    y_train = train_df.iloc[:, -1]   # Last column as target
+
+    X_test = test_df.iloc[:, :-1]
+    y_test = test_df.iloc[:, -1]
+
+
+
+    stacking_clf.fit(X_train, y_train)
+
+    y_pred = stacking_clf.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Stacking Model Accuracy: {accuracy:.4f}")
+    
+
+
+
+real = pd.read_csv('COMBO2.csv')
+fake = pd.read_csv('synthetic.csv')
+
+train_classifier_combined(real,fake)
