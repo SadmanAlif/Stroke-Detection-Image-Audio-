@@ -5,14 +5,14 @@ from table_evaluator import load_data, TableEvaluator
 
 def train_ctgan(data, categorical_features):
     ctgan = CTGAN(
-        batch_size=130,  
+        batch_size=250,  
         generator_dim=(256, 256), 
         discriminator_dim=(256, 256),  
         epochs=300,  
         verbose=True
     )
     ctgan.fit(data, categorical_features, epochs=300)  
-    samples = ctgan.sample(2000)  
+    samples = ctgan.sample(1000)  
     print(samples.head())
     return samples
 
