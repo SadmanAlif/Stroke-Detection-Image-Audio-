@@ -13,7 +13,6 @@ import numpy as np
 import seaborn as sns
 import time
 from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
-from pycaret.classification import *
 
 hyperparameters_RFC = {'n_estimators': 300, 'max_depth': 90, 'min_samples_split': 6, 'min_samples_leaf': 3,
                        'max_features': 'sqrt', 'bootstrap': False, 'criterion': 'entropy'}
@@ -110,6 +109,8 @@ Trains models on 80% of real data and tests on 20% of synthetic data and vice ve
 """
 def train_test_cross(train_data, test_data):
 
+    report_list = []
+
     if 'Filename' in train_data.columns:
         train_data = train_data.drop('Filename', axis=1)
     
@@ -140,10 +141,8 @@ def train_test_cross(train_data, test_data):
 
 real_df =  pd.read_csv('COMBO2.csv')
 sythetic_df =  pd.read_csv('synthetic.csv')
-combined_df = pd.concat([real_df, sythetic_df], ignore_index=True)
 
-
-report_list = train_classifier_combined(real_df, sythetic_df)
+report_list = train_test_cross(sythetic_df, real_df)
 
 for name,report in report_list:
     print(f'Classification report for {name}')
